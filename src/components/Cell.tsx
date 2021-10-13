@@ -3,41 +3,28 @@ import palette from 'lib/palette';
 import styled from 'styled-components';
 import { Direction, Point } from 'types';
 
-const Container = styled.div<{ point: Point; direction: Direction }>`
+const Container = styled.div.attrs(({ point }: { point: Point }) => ({
+  style: {
+    transform: `translate(
+	${point.x}px,
+	${point.y}px
+)`,
+    width: cellSize,
+    height: cellSize,
+  },
+}))<{
+  point: Point;
+  direction: Direction;
+}>`
   position: absolute;
-  left: ${({ point }) => point.x}px;
-  top: ${({ point }) => point.y}px;
-  width: ${cellSize}px;
-  height: ${cellSize}px;
+  left: 0;
+  top: 0;
   background-color: ${palette.cellColor};
   border-radius: 4px;
-  transition: left 0.2s linear, top 0.2s linear;
+  transition: transform, 0.2s linear;
 
   &:first-child {
-    transform: rotate(${({ direction }) => direction}deg);
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      top: 4px;
-      display: block;
-      width: 4px;
-      height: 4px;
-      background-color: #f00;
-    }
-    &::before {
-      left: 4px;
-    }
-    &::after {
-      content: '';
-      position: absolute;
-      right: 4px;
-      display: block;
-      width: 4px;
-      height: 4px;
-      background-color: #f00;
-    }
+    background-color: #f00;
   }
 `;
 
