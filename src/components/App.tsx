@@ -1,4 +1,4 @@
-import { defaultScreenSize } from 'lib/consts';
+import { screenSize } from 'lib/consts';
 import { useEffect } from 'react';
 import { useWorm } from 'service/worm';
 import styled from 'styled-components';
@@ -21,7 +21,7 @@ const Container = styled.div`
 `;
 
 function App() {
-  const { points, direction, changeDirection } = useWorm();
+  const { points, direction, changeDirection, moveWorm } = useWorm();
   const handleChangeDirection = (e: KeyboardEvent) => {
     if (Object.keys(directionMap).includes(e.key)) {
       changeDirection(directionMap[e.key]);
@@ -29,10 +29,18 @@ function App() {
   };
   useEffect(() => {
     document.addEventListener('keydown', handleChangeDirection);
+    return () => {
+      document.removeEventListener('keydown', handleChangeDirection);
+    };
   }, []);
+  useEffect(() => {
+    moveWorm();
+    const interval = setInterval(moveWorm, 200);
+    return () => clearInterval(interval);
+  }, [direction]);
   return (
     <Container>
-      <Screen size={defaultScreenSize}>
+      <Screen size={screenSize}>
         <Worm points={points} direction={direction} />
       </Screen>
     </Container>
