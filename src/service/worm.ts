@@ -48,8 +48,12 @@ export const useWorm = (defaultPoints?: Point[]) => {
     );
   }, [direction]);
 
+  const grow = () => {
+    setPoints((draftPoints) => draftPoints.concat(draftPoints.slice(-1)[0]));
+  };
+
   return useMemo(
-    () => ({ points, direction, changeDirection, moveWorm }),
+    () => ({ points, direction, changeDirection, moveWorm, grow }),
     [points, direction, changeDirection, moveWorm],
   );
 };

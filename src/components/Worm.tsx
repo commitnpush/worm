@@ -2,7 +2,10 @@ import styled from 'styled-components';
 import { Direction, Point } from 'types';
 import Cell from './Cell';
 
-const Container = styled.div``;
+const Container = styled.div`
+  position: relative;
+  z-index: 10;
+`;
 
 const Worm = ({
   points,

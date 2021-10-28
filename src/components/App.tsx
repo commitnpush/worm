@@ -1,8 +1,10 @@
-import { screenSize } from 'lib/consts';
+import { gameSpeed, screenSize } from 'lib/consts';
 import { useEffect } from 'react';
+import { useFrog } from 'service/frog';
 import { useWorm } from 'service/worm';
 import styled from 'styled-components';
 import { Direction } from 'types';
+import Frog from './Frog';
 import Screen from './Screen';
 import Worm from './Worm';
 
@@ -21,10 +23,11 @@ const Container = styled.div`
 `;
 
 function App() {
-  const { points, direction, changeDirection, moveWorm } = useWorm();
+  const worm = useWorm();
+  const frog = useFrog();
   const handleChangeDirection = (e: KeyboardEvent) => {
     if (Object.keys(directionMap).includes(e.key)) {
-      changeDirection(directionMap[e.key]);
+      worm.changeDirection(directionMap[e.key]);
     }
   };
   useEffect(() => {
@@ -34,14 +37,24 @@ function App() {
     };
   }, []);
   useEffect(() => {
-    moveWorm();
-    const interval = setInterval(moveWorm, 200);
+    worm.moveWorm();
+    const interval = setInterval(worm.moveWorm, gameSpeed);
     return () => clearInterval(interval);
-  }, [direction]);
+  }, [worm.direction]);
+  useEffect(() => {
+    if (
+      worm.points[0].x === frog.point.x &&
+      worm.points[0].y === frog.point.y
+    ) {
+      worm.grow();
+      frog.move();
+    }
+  }, [worm.points, frog.point]);
   return (
     <Container>
       <Screen size={screenSize}>
-        <Worm points={points} direction={direction} />
+        <Worm points={worm.points} direction={worm.direction} />
+        <Frog point={frog.point} />
       </Screen>
     </Container>
   );

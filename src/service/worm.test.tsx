@@ -36,7 +36,6 @@ describe('moveWorm', () => {
     expect(result.current.points[0].x).toBe(defaultPoints[0].x);
     expect(result.current.points[0].y).toBe(defaultPoints[0].y);
     expect(result.current.direction).toBe(90);
-
     act(() => result.current.moveWorm());
     expect(result.current.points[0].x).toBe(defaultPoints[0].x + cellSize);
     expect(result.current.points[0].y).toBe(defaultPoints[0].y);
@@ -45,13 +44,11 @@ describe('moveWorm', () => {
   test('오른쪽(90)으로 두 칸 이동', () => {
     const defaultPoints = [{ x: cellSize * 5, y: 0 }];
     const { result } = renderHook(() => useWorm(defaultPoints));
-
     act(() => result.current.moveWorm());
     act(() => result.current.moveWorm());
     expect(result.current.points[0].x).toBe(defaultPoints[0].x + cellSize * 2);
     expect(result.current.points[0].y).toBe(defaultPoints[0].y);
   });
-
   test('아래(180)로 한 칸 이동', () => {
     const defaultPoints = [{ x: cellSize * 5, y: 0 }];
     const { result } = renderHook(() => useWorm(defaultPoints));
@@ -84,5 +81,26 @@ describe('moveWorm', () => {
     act(() => result.current.changeDirection(0));
     act(() => result.current.moveWorm());
     expect(result.current.points[0].y).toBe(screenSize.height - cellSize);
+  });
+});
+
+describe('grow', () => {
+  test('길이 성장', () => {
+    const defaultPoints = [{ x: 0, y: 0 }];
+    const { result } = renderHook(() => useWorm(defaultPoints));
+    expect(result.current.points.length).toBe(1);
+    act(() => result.current.grow());
+    expect(result.current.points.length).toBe(2);
+  });
+  test('꼬리에 세포 추가', () => {
+    const defaultPoints = [
+      { x: 0, y: 0 },
+      { x: 20, y: 0 },
+    ];
+    const { result } = renderHook(() => useWorm(defaultPoints));
+    act(() => result.current.grow());
+    expect(result.current.points.length).toBe(3);
+    expect(result.current.points[1].x).toBe(result.current.points[2].x);
+    expect(result.current.points[1].y).toBe(result.current.points[2].y);
   });
 });
